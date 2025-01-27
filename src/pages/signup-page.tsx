@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { useAuthStore } from '../store/auth-user'
 import Skeleton from '../components/skeletons/index'
+import { useAuth } from '../hooks/use-auth'
 
 const SignupPage: React.FC = () => {
   const [searchParams] = useSearchParams()
@@ -11,7 +11,7 @@ const SignupPage: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const { signup, isSigningUp } = useAuthStore()
+  const { signup, isSigningUp } = useAuth()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

@@ -1,14 +1,16 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/home/home-page'
 import LoginPage from './pages/login-page'
 import SignupPage from './pages/signup-page'
-import { Toaster } from 'react-hot-toast'
-import { Loader } from 'lucide-react'
+import LandingPage from './pages/public-pages/landing'
 import { useEffect } from 'react'
-import { useAuthStore } from './store/auth-user'
+import { Loader } from 'lucide-react'
+import { useAuth } from './hooks/use-auth'
+import ProtectedRoute from './routes/protected-route'
 
 function App() {
-  const { user, isCheckingAuth, authCheck } = useAuthStore()
+  const { isCheckingAuth, authCheck } = useAuth()
 
   useEffect(() => {
     authCheck()
@@ -27,9 +29,17 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/login' element={!user ? <LoginPage /> : <Navigate to={'/'} />} />
-        <Route path='/signup' element={!user ? <SignupPage /> : <Navigate to={'/'} />} />
+        <Route index element={<LandingPage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/signup' element={<SignupPage />} />
+        <Route
+          path='home'
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       <Toaster />

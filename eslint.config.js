@@ -35,7 +35,8 @@ export default tseslint.config(
           printWidth: 120,
           jsxSingleQuote: true
         }
-      ]
+      ],
+      curly: ['error', 'all']
     }
   }
 )
