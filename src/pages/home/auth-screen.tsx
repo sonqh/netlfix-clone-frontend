@@ -1,12 +1,12 @@
 import React from 'react'
-import Navbar from '../../components/navbar'
+import Header from '../../components/header'
 import HeroSection from '../../components/hero-section'
 import ContentSection from '../../components/content-section'
 
 const AuthScreen: React.FC = () => {
   return (
     <div className='hero-bg relative'>
-      <Navbar linkText='Sign In' linkUrl='/login' />
+      <Header linkText='Sign In' linkUrl='/login' />
       <HeroSection />
 
       <ContentSection

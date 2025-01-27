@@ -7,9 +7,9 @@ interface NavbarProps {
   children?: React.ReactNode
 }
 
-const Navbar: React.FC<NavbarProps> = ({ linkText, linkUrl = '/', children }) => {
+const Header: React.FC<NavbarProps> = ({ linkText, linkUrl = '/', children }) => {
   return (
-    <header className=' mx-auto flex items-center justify-between p-4 pb-10'>
+    <header className='mx-auto flex items-center justify-between p-4 pb-10'>
       {children}
       {linkText && (
         <>
@@ -23,4 +23,4 @@ const Navbar: React.FC<NavbarProps> = ({ linkText, linkUrl = '/', children }) =>
   )
 }
 
-export default Navbar
+export default Header

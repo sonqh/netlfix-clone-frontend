@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from '../components/navbar'
+import Header from '../components/header'
 import Skeleton from '../components/skeletons/index'
 import { useAuth } from '../hooks/use-auth'
 
@@ -21,11 +21,11 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className='hero-bg h-screen w-full'>
-      <Navbar>
+      <Header>
         <Link to='/'>
           <img src='/netflix-logo.png' alt='Netflix' className='w-24' />
         </Link>
-      </Navbar>
+      </Header>
       <div className='flex justify-center items-center mt-20 mx-3'>
         <div className='w-full max-w-md space-y-4 p-8 bg-black/60 rounded-lg shadow-md'>
           <h1 className='text-white text-center text-2xl font-bold mb-4'>Login</h1>
