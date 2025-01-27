@@ -13,8 +13,10 @@ function App() {
   const { isCheckingAuth, authCheck } = useAuth()
 
   useEffect(() => {
-    authCheck()
-  }, [authCheck])
+    if (!isCheckingAuth) {
+      authCheck()
+    }
+  }, [authCheck, isCheckingAuth])
 
   if (isCheckingAuth) {
     return (

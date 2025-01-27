@@ -1,70 +1,77 @@
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
 
+// Create Axios instance
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json'
+  },
+  withCredentials: true
 })
 
-// Pending requests map
+// Map to track pending requests
 const pendingRequests = new Map<string, AbortController>()
 
-// Generate unique key for each request
+// Generate a unique key for each request
 const generateRequestKey = (config: AxiosRequestConfig): string => {
   const { method, url, params, data } = config
   return [method, url, JSON.stringify(params), JSON.stringify(data)].join('&')
 }
 
-// Add request to pendingRequests map
+// Add request to the pendingRequests map
 const addPendingRequest = (config: AxiosRequestConfig): void => {
   const requestKey = generateRequestKey(config)
 
-  // Abort existing request if it exists
+  // If the request already exists, abort the previous one
   if (pendingRequests.has(requestKey)) {
-    const controller = pendingRequests.get(requestKey)
-    controller?.abort()
+    const existingController = pendingRequests.get(requestKey)
+    existingController?.abort()
   }
 
   // Create a new AbortController for the current request
   const controller = new AbortController()
   config.signal = controller.signal
 
-  // Store the controller in pendingRequests
+  // Store the controller in the pendingRequests map
   pendingRequests.set(requestKey, controller)
 }
 
-// Remove request from pendingRequests map
+// Remove a request from the pendingRequests map
 const removePendingRequest = (config: AxiosRequestConfig): void => {
   const requestKey = generateRequestKey(config)
-  if (pendingRequests.has(requestKey)) {
-    pendingRequests.delete(requestKey)
-  }
+  pendingRequests.delete(requestKey) // Safe to delete even if the key doesn't exist
 }
 
-// Request interceptor
-axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  addPendingRequest(config)
-  return config
-})
+// Add request interceptor
+axiosInstance.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    addPendingRequest(config) // Track the current request
+    return config
+  },
+  (error) => {
+    // Handle errors in the request configuration phase
+    return Promise.reject(error)
+  }
+)
 
-// Response interceptor
+// Add response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Remove request from pendingRequests after successful response
+    // Remove the request from the map after a successful response
     removePendingRequest(response.config)
     return response
   },
   (error) => {
-    // Remove request from pendingRequests on error
+    // Remove the request from the map in case of an error
     if (error.config) {
       removePendingRequest(error.config)
     }
 
-    // Handle specific error cases
+    // If the error is due to cancellation, handle it gracefully
     if (axios.isCancel(error)) {
-      console.info('Request canceled:', error.message) // Expected behavior
-    } else if (error.code === 'ERR_CANCELED') {
-      console.warn('Request aborted:', error.message)
-    } else {
-      console.error('Request failed:', error.message)
+      console.log('Request cancelled:', error.message)
     }
 
     return Promise.reject(error)

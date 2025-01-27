@@ -1,8 +1,9 @@
+import { useLocalStorage } from '@uidotdev/usehooks'
 import axios from 'axios'
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useMemo, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import { useLocalStorage } from 'usehooks-ts'
+import axiosInstance from '../api/axios-instance'
 
 type Credentials = {
   email: string
@@ -41,6 +42,10 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const handleError = (error: unknown, defaultMessage: string) => {
+  if (axios.AxiosError.ERR_CANCELED) {
+    return
+  }
+
   if (axios.isAxiosError(error) && error.response?.data?.message) {
     toast.error(error.response.data.message)
   } else {
@@ -48,16 +53,16 @@ const handleError = (error: unknown, defaultMessage: string) => {
   }
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null)
-  const [isCheckingAuth, setIsCheckingAuth] = useState(false)
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const [isSigningUp, setIsSigningUp] = useState(false)
+  const isCheckingAuthRef = useRef(false)
+  const isLoggingInRef = useRef(false)
+  const isSigningUpRef = useRef(false)
   const navigate = useNavigate()
 
   const signup = useCallback(
     async (credentials: Credentials) => {
-      setIsSigningUp(true)
+      isSigningUpRef.current = true
       try {
         const { data } = await axios.post<AuthResponse>('/api/v1/auth/signup', credentials)
         setUser(data.user)
@@ -67,7 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         handleError(error, 'Signup failed')
         setUser(null)
       } finally {
-        setIsSigningUp(false)
+        isSigningUpRef.current = false
       }
     },
     [navigate, setUser]
@@ -75,7 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = useCallback(
     async (credentials: Credentials) => {
-      setIsLoggingIn(true)
+      isLoggingInRef.current = true
       try {
         const { data } = await axios.post<AuthResponse>('/api/v1/auth/login', credentials)
         setUser(data.user)
@@ -85,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         handleError(error, 'Login failed')
         setUser(null)
       } finally {
-        setIsLoggingIn(false)
+        isLoggingInRef.current = false
       }
     },
     [navigate, setUser]
@@ -104,46 +109,44 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [navigate, setUser])
 
   const authCheck = useCallback(async () => {
-    setIsCheckingAuth(true)
+    isCheckingAuthRef.current = true
     const token = localStorage.getItem('token')
     if (!token) {
-      setIsCheckingAuth(false)
+      isCheckingAuthRef.current = false
       setUser(null)
       return
     }
 
     try {
-      const { data } = await axios.get<AuthResponse>('/api/v1/auth/authCheck', {
-        headers: { Authorization: `Bearer ${token}` }
+      const { data } = await axiosInstance.get<AuthResponse>('/api/v1/auth/authCheck', {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: new AbortController().signal
       })
       setUser(data.user)
     } catch (error) {
+      console.log('error', error)
       handleError(error, 'Authentication check failed')
       setUser(null)
     } finally {
-      setIsCheckingAuth(false)
+      isCheckingAuthRef.current = false
     }
   }, [setUser])
-
-  useEffect(() => {
-    authCheck()
-  }, [authCheck])
 
   const value = useMemo(
     () => ({
       user,
       signup,
-      isSigningUp,
+      isSigningUp: isSigningUpRef.current,
       login,
       logout,
-      isCheckingAuth,
-      isLoggingIn,
+      isCheckingAuth: isCheckingAuthRef.current,
+      isLoggingIn: isLoggingInRef.current,
       authCheck
     }),
-    [user, isCheckingAuth, isLoggingIn, login, logout, authCheck, signup, isSigningUp]
+    [user, login, logout, authCheck, signup]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export { AuthContext }
+export { AuthContext, AuthProvider }

@@ -1,15 +1,25 @@
 import React, { useMemo } from 'react'
-import useGetTrendingContent from '../../hooks/use-fetch-content'
-import { GradientOverlay, Overlay } from '../../components/overlay'
+import { Movie } from 'tmdb-ts'
 import BackgroundImage from '../../components/background-image'
-import ActionButtons from '../../components/action-buttons'
+import ActionButtons from '../../components/buttons/action-buttons'
 import Navbar from '../../components/navbar.t'
+import { GradientOverlay, Overlay } from '../../components/overlay'
+import MovieSlider from '../../components/slider/movie'
+import { useContentStore } from '../../hooks/use-content'
+import useFetchData from '../../hooks/use-fetch'
+import { MOVIE_CATEGORIES, TV_CATEGORIES } from '../../utils/constant'
+
+type ContentItem = {
+  success: boolean
+  content: Movie
+}
 
 const HomePage: React.FC = () => {
-  const { trendingContent } = useGetTrendingContent()
+  const { contentType } = useContentStore()
+  const { data, isLoading } = useFetchData<ContentItem>({ endpoint: `/api/v1/${contentType}/trending` })
   const { backdrop_path, title, release_date, adult, overview, id } = useMemo(
     () =>
-      trendingContent ?? {
+      data?.content ?? {
         backdrop_path: '',
         title: '',
         release_date: '',
@@ -17,10 +27,10 @@ const HomePage: React.FC = () => {
         overview: '',
         id: ''
       },
-    [trendingContent]
+    [data?.content]
   )
 
-  if (!trendingContent) {
+  if (isLoading) {
     return (
       <div className='h-screen text-white relative'>
         <Navbar />
@@ -30,22 +40,29 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <div className='relative h-screen text-white'>
-      <Navbar />
-      <BackgroundImage backdropPath={backdrop_path} />
-      <Overlay />
-      <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-center px-8 md:px-16 lg:px-32'>
-        <GradientOverlay />
-        <div className='max-w-2xl'>
-          <h1 className='mt-4 text-6xl font-extrabold text-balance'>{title}</h1>
-          <p className='mt-2 text-lg'>
-            {release_date?.split('-')[0]} | {adult ? '18+' : 'PG-13'}
-          </p>
-          <p className='mt-4 text-lg'>{overview.length > 200 ? `${overview.slice(0, 200)}...` : overview}</p>
+    <>
+      <div className='relative h-screen text-white'>
+        <Navbar />
+        <BackgroundImage backdropPath={backdrop_path} />
+        <Overlay />
+        <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-center px-8 md:px-16 lg:px-32'>
+          <GradientOverlay />
+          <div className='max-w-2xl'>
+            <h1 className='mt-4 text-6xl font-extrabold text-balance'>{title}</h1>
+            <p className='mt-2 text-lg'>
+              {release_date?.split('-')[0]} | {adult ? '18+' : 'PG-13'}
+            </p>
+            <p className='mt-4 text-lg'>{overview.length > 200 ? `${overview.slice(0, 200)}...` : overview}</p>
+          </div>
+          <ActionButtons id={`${id}`} />
         </div>
-        <ActionButtons id={`${id}`} />
       </div>
-    </div>
+      <div className='flex flex-col gap-10 bg-black py-10'>
+        {contentType === 'movie'
+          ? MOVIE_CATEGORIES.map((category) => <MovieSlider key={category} category={category} />)
+          : TV_CATEGORIES.map((category) => <MovieSlider key={category} category={category} />)}
+      </div>
+    </>
   )
 }
 
