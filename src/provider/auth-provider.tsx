@@ -4,6 +4,7 @@ import { createContext, useCallback, useMemo, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axios-instance'
+import { handleError } from '../utils/error-handler'
 
 type Credentials = {
   email: string
@@ -40,18 +41,6 @@ type AuthContextType = {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-const handleError = (error: unknown, defaultMessage: string) => {
-  if (axios.AxiosError.ERR_CANCELED) {
-    return
-  }
-
-  if (axios.isAxiosError(error) && error.response?.data?.message) {
-    toast.error(error.response.data.message)
-  } else {
-    toast.error(defaultMessage)
-  }
-}
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null)

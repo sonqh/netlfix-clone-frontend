@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import axiosInstance from '../api/axios-instance'
+import { handleError } from '../utils/error-handler'
 
 interface UseFetchDataProps {
   endpoint: string
@@ -61,7 +62,16 @@ const useFetchData = <T>({ endpoint }: UseFetchDataProps) => {
     }
   }, [fetchData, endpoint, prevEndpoint])
 
-  return { data, error, isLoading }
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`${endpoint}/${id}`)
+      await fetchData(endpoint)
+    } catch (error) {
+      handleError(error, 'An error occurred while deleting, please try again later')
+    }
+  }
+
+  return { data, error, isLoading, handleDelete }
 }
 
 export default useFetchData

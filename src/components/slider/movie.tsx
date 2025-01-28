@@ -17,6 +17,7 @@ type ContentItem = {
 
 const MovieSlider = ({ category }: MovieSliderProps) => {
   const { contentType } = useContentStore()
+
   const [showArrows, setShowArrows] = useState(false)
   const sliderRef = useRef<HTMLDivElement>(null)
 

@@ -8,9 +8,11 @@ import { useEffect } from 'react'
 import { Loader } from 'lucide-react'
 import { useAuth } from './hooks/use-auth'
 import ProtectedRoute from './routes/protected-route'
+import SearchPage from './pages/search-page'
+import SearchHistoryPage from './pages/search-history'
 
 function App() {
-  const { isCheckingAuth, authCheck } = useAuth()
+  const { isCheckingAuth, authCheck, user } = useAuth()
 
   useEffect(() => {
     if (!isCheckingAuth) {
@@ -31,7 +33,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route index element={<LandingPage />} />
+        <Route index element={user ? <HomePage /> : <LandingPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/signup' element={<SignupPage />} />
         <Route
@@ -39,6 +41,22 @@ function App() {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='search'
+          element={
+            <ProtectedRoute>
+              <SearchPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='history'
+          element={
+            <ProtectedRoute>
+              <SearchHistoryPage />
             </ProtectedRoute>
           }
         />
