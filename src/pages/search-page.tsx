@@ -75,7 +75,7 @@ const SearchPage = () => {
                   <div key={result.id} className='bg-gray-800 p-4 rounded'>
                     <div className='flex flex-col items-center'>
                       <img
-                        src={ORIGINAL_IMG_BASE_URL + (result.profile_path || '/fallback-profile.png')}
+                        src={ORIGINAL_IMG_BASE_URL + result.profile_path}
                         alt={result.name}
                         className='max-h-96 rounded mx-auto'
                       />
