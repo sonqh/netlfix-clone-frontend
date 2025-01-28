@@ -1,5 +1,5 @@
 import React from 'react'
-import { ORIGINAL_IMG_BASE_URL } from '../utils/constant'
+import { ORIGINAL_IMG_BASE_URL } from '../../utils/constant'
 
 const BackgroundImage: React.FC<{ backdropPath: string }> = ({ backdropPath }) => (
   <img

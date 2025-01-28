@@ -1,6 +1,6 @@
+import { Movie, TvCast } from '@plotwist_app/tmdb'
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Movie, TV } from 'tmdb-ts'
 import { useContentStore } from '../../hooks/use-content'
 import useFetchData from '../../hooks/use-fetch'
 import { SMALL_IMG_BASE_URL } from '../../utils/constant'
@@ -12,7 +12,7 @@ type MovieSliderProps = {
 
 type ContentItem = {
   success: boolean
-  content: Movie[] | TV[]
+  content: Movie[] | TvCast[]
 }
 
 const MovieSlider = ({ category }: MovieSliderProps) => {

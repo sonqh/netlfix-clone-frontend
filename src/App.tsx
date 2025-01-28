@@ -10,6 +10,7 @@ import { useAuth } from './hooks/use-auth'
 import ProtectedRoute from './routes/protected-route'
 import SearchPage from './pages/search-page'
 import SearchHistoryPage from './pages/search-history'
+import WatchPage from './pages/watch-page'
 
 function App() {
   const { isCheckingAuth, authCheck, user } = useAuth()
@@ -41,6 +42,14 @@ function App() {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='watch/:id'
+          element={
+            <ProtectedRoute>
+              <WatchPage />
             </ProtectedRoute>
           }
         />

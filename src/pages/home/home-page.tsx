@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react'
-import { Movie } from 'tmdb-ts'
-import BackgroundImage from '../../components/background-image'
+import { Movie } from '@plotwist_app/tmdb'
 import ActionButtons from '../../components/buttons/action-buttons'
-import Navbar from '../../components/navbar.t'
-import { GradientOverlay, Overlay } from '../../components/overlay'
+import { GradientOverlay, Overlay } from '../../components/_components/overlay'
 import MovieSlider from '../../components/slider/movie'
 import { useContentStore } from '../../hooks/use-content'
 import useFetchData from '../../hooks/use-fetch'
 import { MOVIE_CATEGORIES, TV_CATEGORIES } from '../../utils/constant'
+import Navbar from '../../components/_components/navbar'
+import BackgroundImage from '../../components/_components/background-image'
 
 type ContentItem = {
   success: boolean
@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
     <>
       <div className='relative h-screen text-white'>
         <Navbar />
-        <BackgroundImage backdropPath={backdrop_path} />
+        <BackgroundImage backdropPath={backdrop_path ?? ''} />
         <Overlay />
         <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-center px-8 md:px-16 lg:px-32'>
           <GradientOverlay />

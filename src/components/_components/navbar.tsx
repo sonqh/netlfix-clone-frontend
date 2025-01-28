@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import { useContentStore } from '../hooks/use-content'
 import { LogOut, Menu, Search } from 'lucide-react'
-import { useAuth } from '../hooks/use-auth'
 import { useState } from 'react'
+import { useAuth } from '../../hooks/use-auth'
+import { useContentStore } from '../../hooks/use-content'
 
 const Navbar = () => {
   const { user, logout } = useAuth()

@@ -1,4 +1,4 @@
-import { MediaType } from 'tmdb-ts'
+import { MediaType } from '@plotwist_app/tmdb/dist/utils/with_media_type'
 import { create } from 'zustand'
 
 interface ContentStore {

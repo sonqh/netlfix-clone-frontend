@@ -1,12 +1,13 @@
-import { usePrevious } from '@uidotdev/usehooks'
-import axios, { AxiosError, AxiosRequestConfig } from 'axios'
-import { useCallback, useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import axios, { AxiosRequestConfig } from 'axios'
+import { isEqual } from 'lodash'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import axiosInstance from '../api/axios-instance'
 import { handleError } from '../utils/error-handler'
+import { usePrevious } from '@uidotdev/usehooks'
 
-interface UseFetchDataProps {
+interface UseFetchDataProps<K extends object = object> {
   endpoint: string
+  trigger?: K
   params?: Record<string, string>
   config?: AxiosRequestConfig
 }
@@ -18,60 +19,91 @@ interface ApiError {
   [key: string]: string | number | string[] | undefined
 }
 
-const useFetchData = <T>({ endpoint }: UseFetchDataProps) => {
+const useFetchData = <T, K extends object = object>({ endpoint, trigger, params, config }: UseFetchDataProps<K>) => {
   const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState<ApiError | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const prevEndpoint = usePrevious(endpoint)
 
-  const fetchData = useCallback(async (fetchEndPoint: string) => {
-    setIsLoading(true)
-    try {
-      const response = await axiosInstance.get<T>(fetchEndPoint)
-      setData(response.data)
-      setError(null)
-    } catch (err) {
-      let apiError: ApiError = { message: 'An unexpected error occurred.' }
-      if (axios.isAxiosError(err)) {
-        const axiosError = err as AxiosError<{ errors: string[] }>
-        if (axiosError.response && axiosError.response.data) {
-          apiError = {
-            message: Array.isArray(axiosError.response.data.errors)
-              ? axiosError.response.data.errors.join(', ')
-              : (axiosError.response.data.errors ?? 'An unexpected error occurred.'),
-            status: axiosError.response.status,
-            ...axiosError.response.data
-          }
-        } else if (axiosError.message) {
-          apiError.message = axiosError.message
-          apiError.code = axiosError.code
+  // Cache storage
+  const cache = useMemo(() => new Map<string, { data: T; timestamp: number }>(), [])
+
+  const prevEndpoint = usePrevious(endpoint)
+  const prevTrigger = usePrevious(trigger)
+
+  /**
+   * Fetches data from the specified endpoint.
+   * @param fetchEndPoint - The API endpoint to fetch data from.
+   * @param bypassCache - If true, ignores the cache and fetches fresh data.
+   */
+  const fetchData = useCallback(
+    async (fetchEndPoint: string, bypassCache: boolean = false) => {
+      const cacheKey = `${fetchEndPoint}-${JSON.stringify(params)}`
+
+      // Check if data exists in the cache and bypassCache is false
+      if (!bypassCache && cache.has(cacheKey)) {
+        const cachedData = cache.get(cacheKey)
+        if (cachedData && Date.now() - cachedData.timestamp < 1000 * 60 * 5) {
+          setData(cachedData.data)
+          return
         }
       }
-      if (apiError.code !== 'ERR_CANCELED') {
-        toast.error(apiError.message)
-        setError(apiError)
+
+      setIsLoading(true)
+      try {
+        const response = await axiosInstance.get<T>(fetchEndPoint, { params, ...config })
+        setData(response.data)
+        setError(null)
+
+        // Update cache
+        cache.set(cacheKey, { data: response.data, timestamp: Date.now() })
+      } catch (err) {
+        handleError(err, 'An unexpected error occurred while fetching data.')
+        setError({
+          message: 'An unexpected error occurred.',
+          ...(axios.isAxiosError(err) && {
+            status: err.response?.status,
+            errors: err.response?.data?.errors
+          })
+        })
+      } finally {
+        setIsLoading(false)
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    },
+    [params, config, cache]
+  )
 
   useEffect(() => {
-    if (prevEndpoint !== endpoint) {
+    const isTriggerChanged = !isEqual(prevTrigger, trigger)
+    if (prevEndpoint !== endpoint || isTriggerChanged) {
       fetchData(endpoint)
     }
-  }, [fetchData, endpoint, prevEndpoint])
+  }, [fetchData, endpoint, trigger, prevEndpoint, prevTrigger])
 
-  const handleDelete = async (id: string) => {
-    try {
-      await axios.delete(`${endpoint}/${id}`)
-      await fetchData(endpoint)
-    } catch (error) {
-      handleError(error, 'An error occurred while deleting, please try again later')
-    }
-  }
+  /**
+   * Deletes an item by ID and refreshes the data without using the cache.
+   * @param id - The ID of the item to delete.
+   */
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        await axiosInstance.delete(`${endpoint}/${id}`)
+        // Force refresh data without using the cache
+        fetchData(endpoint, true)
+      } catch (error) {
+        handleError(error, 'An error occurred while deleting, please try again later.')
+      }
+    },
+    [endpoint, fetchData]
+  )
 
-  return { data, error, isLoading, handleDelete }
+  /**
+   * Forces a data refresh by bypassing the cache.
+   */
+  const refresh = useCallback(() => {
+    fetchData(endpoint, true)
+  }, [fetchData, endpoint])
+
+  return { data, error, isLoading, handleDelete, refresh }
 }
 
 export default useFetchData

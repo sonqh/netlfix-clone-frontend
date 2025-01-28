@@ -1,8 +1,8 @@
-import { format } from 'date-fns'
 import { Trash } from 'lucide-react'
-import Navbar from '../components/navbar.t'
 import useFetchData from '../hooks/use-fetch'
 import { SMALL_IMG_BASE_URL } from '../utils/constant'
+import { formatDate } from '../utils/date-format'
+import Navbar from '../components/_components/navbar'
 
 type SearchHistoryEntry = {
   id: string
@@ -15,10 +15,6 @@ type SearchHistoryEntry = {
 type ContentItem = {
   success: boolean
   content: SearchHistoryEntry[]
-}
-
-const formatDate = (dateString: string): string => {
-  return format(new Date(dateString), 'MMM dd, yyyy')
 }
 
 const SearchHistoryPage: React.FC = () => {

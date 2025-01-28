@@ -2,12 +2,19 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 
 export const handleError = (error: unknown, defaultMessage: string) => {
-  if (axios.AxiosError.ERR_CANCELED) {
-    return
-  }
+  if (axios.isAxiosError(error)) {
+    if (error.code === 'ERR_CANCELED') {
+      return
+    }
 
-  if (axios.isAxiosError(error) && error.response?.data?.message) {
-    toast.error(error.response.data.message)
+    if (error.response) {
+      const message = error.response.data?.message || defaultMessage
+      toast.error(message)
+    } else if (error.request) {
+      toast.error('Network error. Please check your connection.')
+    } else {
+      toast.error(defaultMessage)
+    }
   } else {
     toast.error(defaultMessage)
   }

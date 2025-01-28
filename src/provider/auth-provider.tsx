@@ -42,12 +42,16 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null)
   const isCheckingAuthRef = useRef(false)
   const isLoggingInRef = useRef(false)
   const isSigningUpRef = useRef(false)
   const navigate = useNavigate()
+
+  const lastAuthCheckRef = useRef<number | null>(null)
 
   const signup = useCallback(
     async (credentials: Credentials) => {
@@ -97,7 +101,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [navigate, setUser])
 
+  /**
+   * Checks the authentication status of the user.
+   * Utilizes caching to prevent excessive API calls within a short time frame.
+   */
   const authCheck = useCallback(async () => {
+    const now = Date.now()
+    // Check if the last check was made within the cache duration
+    if (lastAuthCheckRef.current && now - lastAuthCheckRef.current < CACHE_DURATION) {
+      return
+    }
+    lastAuthCheckRef.current = now
+
     isCheckingAuthRef.current = true
     const token = localStorage.getItem('token')
     if (!token) {
@@ -113,7 +128,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       setUser(data.user)
     } catch (error) {
-      console.log('error', error)
       handleError(error, 'Authentication check failed')
       setUser(null)
     } finally {

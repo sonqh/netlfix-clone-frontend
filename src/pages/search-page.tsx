@@ -1,13 +1,13 @@
+import { Movie, Person, TvSerieDetails } from '@plotwist_app/tmdb'
 import { Loader, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Movie, Person, TvShowDetails } from 'tmdb-ts'
-import Navbar from '../components/navbar.t'
+import Navbar from '../components/_components/navbar'
 import { useContentStore } from '../hooks/use-content'
 import { useSearchAndDelete } from '../hooks/use-search-and-delete'
 import { ORIGINAL_IMG_BASE_URL } from '../utils/constant'
 
-export type SearchResult = Movie | TvShowDetails | Person
+export type SearchResult = Movie | TvSerieDetails | Person
 
 const SearchPage = () => {
   const [activeTab, setActiveTab] = useState<'movie' | 'tv' | 'person'>('movie')
@@ -23,7 +23,7 @@ const SearchPage = () => {
   }
 
   const isPerson = (result: SearchResult): result is Person => 'profile_path' in result
-  const isMovieOrTv = (result: SearchResult): result is Movie | TvShowDetails => 'poster_path' in result
+  const isMovieOrTv = (result: SearchResult): result is Movie | TvSerieDetails => 'poster_path' in result
 
   return (
     <div className='hero-bg h-screen w-full text-white'>

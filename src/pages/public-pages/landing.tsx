@@ -1,7 +1,7 @@
 import React from 'react'
-import Header from '../../components/header'
-import HeroSection from '../../components/hero-section'
-import ContentSection from '../../components/content-section'
+import Header from '../../components/_components/header'
+import HeroSection from '../../components/sections/hero-section'
+import ContentSection from '../../components/sections/content-section'
 
 const LandingPage: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Header from '../components/header'
+import Header from '../components/_components/header'
 import Skeleton from '../components/skeletons/index'
 import { useAuth } from '../hooks/use-auth'
 
