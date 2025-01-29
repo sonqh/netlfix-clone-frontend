@@ -3,6 +3,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import axiosInstance from '../api/axios-instance'
 import { handleError } from '../utils/error-handler'
 
+interface SearchResults<T> {
+  success: boolean
+  results: T[]
+  total_results: number
+}
+
 interface UseSearchAndDeleteReturn<T> {
   searchTerm: string
   setSearchTerm: (term: string) => void
@@ -27,7 +33,7 @@ export const useSearchAndDelete = <T extends object>(endpoint: string): UseSearc
       return
     }
 
-    const cacheKey = `${endpoint}-${JSON.stringify(debouncedSearchTerm)}`
+    const cacheKey = `${endpoint}-${debouncedSearchTerm}`
 
     // Check if data exists in the cache
     if (cache.has(cacheKey)) {
@@ -40,12 +46,15 @@ export const useSearchAndDelete = <T extends object>(endpoint: string): UseSearc
 
     setIsLoading(true)
     try {
-      const res = await axiosInstance.get<{ content: T[] }>(`${endpoint}/${debouncedSearchTerm}`)
-      setResults(res.data.content)
+      const { data } = await axiosInstance.get<SearchResults<T>>(`${endpoint}/${debouncedSearchTerm}`)
+
+      setResults(data.results)
       setSearchHistory((prevHistory) => [...new Set([debouncedSearchTerm, ...prevHistory])])
 
-      // Update cache
-      cache.set(cacheKey, { data: res.data.content, timestamp: Date.now() })
+      cache.set(cacheKey, {
+        data: data.results,
+        timestamp: Date.now()
+      })
     } catch (error) {
       handleError(error, 'An error occurred, please try again later')
     } finally {
@@ -66,5 +75,12 @@ export const useSearchAndDelete = <T extends object>(endpoint: string): UseSearc
     }
   }
 
-  return { searchTerm, setSearchTerm, results, isLoading, searchHistory, handleDelete }
+  return {
+    searchTerm,
+    setSearchTerm,
+    results,
+    isLoading,
+    searchHistory,
+    handleDelete
+  }
 }
