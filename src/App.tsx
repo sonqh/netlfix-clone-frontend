@@ -1,22 +1,22 @@
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
-import HomePage from './pages/home/home-page'
-import LandingPage from './pages/public-pages/landing'
-import { useEffect } from 'react'
+import { lazy, useEffect } from 'react'
 import { Loader } from 'lucide-react'
 import { useAuth } from './hooks/use-auth'
 import ProtectedRoute from './routes/protected-route'
-import LoginPage from './pages/auth/login-page'
-import SignupPage from './pages/auth/signup-page'
-import MoviesPage from './pages/home/movies-page'
-import TVShowsPage from './pages/home/tv-shows-page'
-import WatchPage from './pages/watch/watch-page'
-import SearchPage from './pages/search/search-page'
-import SearchHistoryPage from './pages/search/search-history'
 import NotFound from './pages/errors/not-found'
-
 import { ErrorBoundary } from 'react-error-boundary'
 import ErrorFallback from './components/_components/error-fallback'
+
+const HomePage = lazy(() => import('./pages/home/home-page'))
+const LandingPage = lazy(() => import('./pages/public-pages/landing'))
+const LoginPage = lazy(() => import('./pages/auth/login-page'))
+const SignupPage = lazy(() => import('./pages/auth/signup-page'))
+const MoviesPage = lazy(() => import('./pages/home/movies-page'))
+const TVShowsPage = lazy(() => import('./pages/home/tv-shows-page'))
+const WatchPage = lazy(() => import('./pages/watch/watch-page'))
+const SearchPage = lazy(() => import('./pages/search/search-page'))
+const SearchHistoryPage = lazy(() => import('./pages/search/search-history'))
 
 function App() {
   const { isCheckingAuth, authCheck, user } = useAuth()

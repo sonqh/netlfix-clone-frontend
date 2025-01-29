@@ -16,8 +16,6 @@ const SearchPage = () => {
 
   const { searchTerm, setSearchTerm, results, isLoading } = useSearchAndDelete<Results>(`/search/${activeTab}`)
 
-  console.log('results', results)
-
   const handleTabChange = (tab: 'movie' | 'tv' | 'person') => {
     setActiveTab(tab)
     setContentType(tab)
