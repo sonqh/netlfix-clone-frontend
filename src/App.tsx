@@ -1,16 +1,16 @@
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/home/home-page'
-import LoginPage from './pages/login-page'
-import SignupPage from './pages/signup-page'
+import LoginPage from './pages/auth/login-page'
+import SignupPage from './pages/auth/signup-page'
 import LandingPage from './pages/public-pages/landing'
 import { useEffect } from 'react'
 import { Loader } from 'lucide-react'
 import { useAuth } from './hooks/use-auth'
 import ProtectedRoute from './routes/protected-route'
-import SearchPage from './pages/search-page'
-import SearchHistoryPage from './pages/search-history'
-import WatchPage from './pages/watch-page'
+import SearchPage from './pages/search/search-page'
+import SearchHistoryPage from './pages/search/search-history'
+import WatchPage from './pages/watch/watch-page'
 
 function App() {
   const { isCheckingAuth, authCheck, user } = useAuth()

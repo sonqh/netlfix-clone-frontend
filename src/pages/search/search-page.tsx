@@ -2,10 +2,10 @@ import { Movie, Person, TvSerieDetails } from '@plotwist_app/tmdb'
 import { Loader, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from '../components/_components/navbar'
-import { useContentStore } from '../hooks/use-content'
-import { useSearchAndDelete } from '../hooks/use-search-and-delete'
-import { ORIGINAL_IMG_BASE_URL } from '../utils/constant'
+import Navbar from '../../components/_components/navbar'
+import { useContentStore } from '../../hooks/use-content'
+import { useSearchAndDelete } from '../../hooks/use-search-and-delete'
+import { ORIGINAL_IMG_BASE_URL } from '../../utils/constant'
 
 export type SearchResult = Movie | TvSerieDetails | Person
 

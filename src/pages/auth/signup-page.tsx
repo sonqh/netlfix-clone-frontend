@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import Skeleton from '../components/skeletons/index'
-import { useAuth } from '../hooks/use-auth'
+import Skeleton from '../../components/skeletons/index'
+import { useAuth } from '../../hooks/use-auth'
 
 const SignupPage: React.FC = () => {
   const [searchParams] = useSearchParams()

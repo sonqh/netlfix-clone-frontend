@@ -1,13 +1,12 @@
 import { useParams } from 'react-router-dom'
-import { useContentStore } from '../hooks/use-content'
-import useFetchData from '../hooks/use-fetch'
-
-import Skeleton from '../components/skeletons'
 import { Movie } from '@plotwist_app/tmdb'
-import { TrailerSection } from '../components/sections/trailer-section'
-import { ContentDetails } from '../components/content-details'
-import { SimilarContentSlider } from '../components/slider/similar-content-slider'
-import Navbar from '../components/_components/navbar'
+import useFetchData from '../../hooks/use-fetch'
+import Skeleton from '../../components/skeletons'
+import Navbar from '../../components/_components/navbar'
+import { TrailerSection } from '../../components/sections/trailer-section'
+import { ContentDetails } from '../../components/content-details'
+import { SimilarContentSlider } from '../../components/slider/similar-content-slider'
+import { useContentStore } from '../../hooks/use-content'
 
 type Trailer = {
   iso_639_1: string

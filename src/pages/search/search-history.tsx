@@ -1,8 +1,8 @@
 import { Trash } from 'lucide-react'
-import useFetchData from '../hooks/use-fetch'
-import { SMALL_IMG_BASE_URL } from '../utils/constant'
-import { formatDate } from '../utils/date-format'
-import Navbar from '../components/_components/navbar'
+import useFetchData from '../../hooks/use-fetch'
+import { SMALL_IMG_BASE_URL } from '../../utils/constant'
+import { formatDate } from '../../utils/date-format'
+import Navbar from '../../components/_components/navbar'
 
 type SearchHistoryEntry = {
   id: string
