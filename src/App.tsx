@@ -13,6 +13,10 @@ import TVShowsPage from './pages/home/tv-shows-page'
 import WatchPage from './pages/watch/watch-page'
 import SearchPage from './pages/search/search-page'
 import SearchHistoryPage from './pages/search/search-history'
+import NotFound from './pages/errors/not-found'
+
+import { ErrorBoundary } from 'react-error-boundary'
+import ErrorFallback from './components/_components/error-fallback'
 
 function App() {
   const { isCheckingAuth, authCheck, user } = useAuth()
@@ -35,60 +39,69 @@ function App() {
 
   return (
     <>
-      <Routes>
-        <Route index element={user ? <HomePage /> : <LandingPage />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/signup' element={<SignupPage />} />
-        <Route
-          path='home'
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='movies'
-          element={
-            <ProtectedRoute>
-              <MoviesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='tv-shows'
-          element={
-            <ProtectedRoute>
-              <TVShowsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='watch/:id'
-          element={
-            <ProtectedRoute>
-              <WatchPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='search'
-          element={
-            <ProtectedRoute>
-              <SearchPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='history'
-          element={
-            <ProtectedRoute>
-              <SearchHistoryPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onReset={() => window.location.reload()}
+        onError={(error, info) => {
+          console.error('Error Boundary caught an error:', error, info)
+        }}
+      >
+        <Routes>
+          <Route index element={user ? <HomePage /> : <LandingPage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/signup' element={<SignupPage />} />
+          <Route
+            path='home'
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='movies'
+            element={
+              <ProtectedRoute>
+                <MoviesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='tv-shows'
+            element={
+              <ProtectedRoute>
+                <TVShowsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='watch/:id'
+            element={
+              <ProtectedRoute>
+                <WatchPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='search'
+            element={
+              <ProtectedRoute>
+                <SearchPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='history'
+            element={
+              <ProtectedRoute>
+                <SearchHistoryPage />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </ErrorBoundary>
       <Toaster />
     </>
   )

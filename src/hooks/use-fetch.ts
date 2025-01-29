@@ -37,7 +37,7 @@ const useFetchData = <T, K extends object = object>({ endpoint, trigger, params,
    */
   const fetchData = useCallback(
     async (fetchEndPoint: string, bypassCache: boolean = false) => {
-      const cacheKey = `${fetchEndPoint}-${JSON.stringify(params)}`
+      const cacheKey = `${fetchEndPoint}`
 
       // Check if data exists in the cache and bypassCache is false
       if (!bypassCache && cache.has(cacheKey)) {
