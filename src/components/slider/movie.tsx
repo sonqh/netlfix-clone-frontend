@@ -1,12 +1,12 @@
 import { Movie, TvCast } from '@plotwist_app/tmdb'
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useContentStore } from '../../hooks/use-content'
 import useFetchData from '../../hooks/use-fetch'
 import { SMALL_IMG_BASE_URL } from '../../utils/constant'
 import ArrowButton from '../buttons/arrow-button'
 
 type MovieSliderProps = {
+  contentType: string
   category: string
 }
 
@@ -15,9 +15,7 @@ type ContentItem = {
   content: Movie[] | TvCast[]
 }
 
-const MovieSlider = ({ category }: MovieSliderProps) => {
-  const { contentType } = useContentStore()
-
+const MovieSlider = ({ contentType, category }: MovieSliderProps) => {
   const [showArrows, setShowArrows] = useState(false)
   const sliderRef = useRef<HTMLDivElement>(null)
 

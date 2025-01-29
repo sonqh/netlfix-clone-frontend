@@ -21,10 +21,10 @@ const Navbar = () => {
 
         {/* desktop navbar items */}
         <div className='hidden sm:flex gap-3 items-center'>
-          <Link to='/' className='hover:underline' onClick={() => setContentType('movie')}>
+          <Link to='/movies' className='hover:underline' onClick={() => setContentType('movie')}>
             Movies
           </Link>
-          <Link to='/' className='hover:underline' onClick={() => setContentType('tv')}>
+          <Link to='/tv-shows' className='hover:underline' onClick={() => setContentType('tv')}>
             TV Shows
           </Link>
           <Link to='/history' className='hover:underline'>
@@ -46,10 +46,18 @@ const Navbar = () => {
 
       {isMobileMenuOpen && (
         <div className='absolute top-full left-0 w-full sm:hidden mt-0 z-50 bg-black bg-opacity-90 border-t border-gray-800 transition transform duration-300 ease-in-out'>
-          <Link to='/' className='block text-white hover:bg-gray-700 px-4 py-2 transition' onClick={toggleMobileMenu}>
+          <Link
+            to='/movies'
+            className='block text-white hover:bg-gray-700 px-4 py-2 transition'
+            onClick={toggleMobileMenu}
+          >
             Movies
           </Link>
-          <Link to='/' className='block text-white hover:bg-gray-700 px-4 py-2 transition' onClick={toggleMobileMenu}>
+          <Link
+            to='/tv-shows'
+            className='block text-white hover:bg-gray-700 px-4 py-2 transition'
+            onClick={toggleMobileMenu}
+          >
             TV Shows
           </Link>
           <Link

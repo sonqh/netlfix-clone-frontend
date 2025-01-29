@@ -1,16 +1,18 @@
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/home/home-page'
-import LoginPage from './pages/auth/login-page'
-import SignupPage from './pages/auth/signup-page'
 import LandingPage from './pages/public-pages/landing'
 import { useEffect } from 'react'
 import { Loader } from 'lucide-react'
 import { useAuth } from './hooks/use-auth'
 import ProtectedRoute from './routes/protected-route'
+import LoginPage from './pages/auth/login-page'
+import SignupPage from './pages/auth/signup-page'
+import MoviesPage from './pages/home/movies-page'
+import TVShowsPage from './pages/home/tv-shows-page'
+import WatchPage from './pages/watch/watch-page'
 import SearchPage from './pages/search/search-page'
 import SearchHistoryPage from './pages/search/search-history'
-import WatchPage from './pages/watch/watch-page'
 
 function App() {
   const { isCheckingAuth, authCheck, user } = useAuth()
@@ -42,6 +44,22 @@ function App() {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='movies'
+          element={
+            <ProtectedRoute>
+              <MoviesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='tv-shows'
+          element={
+            <ProtectedRoute>
+              <TVShowsPage />
             </ProtectedRoute>
           }
         />

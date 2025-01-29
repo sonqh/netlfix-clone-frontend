@@ -3,9 +3,8 @@ import { Movie } from '@plotwist_app/tmdb'
 import ActionButtons from '../../components/buttons/action-buttons'
 import { GradientOverlay, Overlay } from '../../components/_components/overlay'
 import MovieSlider from '../../components/slider/movie'
-import { useContentStore } from '../../hooks/use-content'
 import useFetchData from '../../hooks/use-fetch'
-import { MOVIE_CATEGORIES, TV_CATEGORIES } from '../../utils/constant'
+import { MOVIE_CATEGORIES } from '../../utils/constant'
 import Navbar from '../../components/_components/navbar'
 import BackgroundImage from '../../components/_components/background-image'
 
@@ -14,9 +13,9 @@ type ContentItem = {
   content: Movie
 }
 
-const HomePage: React.FC = () => {
-  const { contentType } = useContentStore()
-  const { data, isLoading } = useFetchData<ContentItem>({ endpoint: `/${contentType}/trending` })
+const MoviesPage: React.FC = () => {
+  const { data, isLoading } = useFetchData<ContentItem>({ endpoint: `/movie/trending` })
+
   const { backdrop_path, title, release_date, adult, overview, id } = useMemo(
     () =>
       data?.content ?? {
@@ -58,16 +57,12 @@ const HomePage: React.FC = () => {
         </div>
       </div>
       <div className='flex flex-col gap-10 bg-black py-10'>
-        {contentType === 'movie'
-          ? MOVIE_CATEGORIES.map((category) => (
-              <MovieSlider key={category} category={category} contentType={contentType} />
-            ))
-          : TV_CATEGORIES.map((category) => (
-              <MovieSlider key={category} category={category} contentType={contentType} />
-            ))}
+        {MOVIE_CATEGORIES.map((category) => (
+          <MovieSlider key={category} category={category} contentType='movie' />
+        ))}
       </div>
     </>
   )
 }
 
-export default HomePage
+export default MoviesPage
