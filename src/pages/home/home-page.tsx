@@ -16,7 +16,7 @@ type ContentItem = {
 
 const HomePage: React.FC = () => {
   const { contentType } = useContentStore()
-  const { data, isLoading } = useFetchData<ContentItem>({ endpoint: `/api/v1/${contentType}/trending` })
+  const { data, isLoading } = useFetchData<ContentItem>({ endpoint: `/${contentType}/trending` })
   const { backdrop_path, title, release_date, adult, overview, id } = useMemo(
     () =>
       data?.content ?? {

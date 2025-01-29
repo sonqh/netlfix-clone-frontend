@@ -21,7 +21,7 @@ const MovieSlider = ({ category }: MovieSliderProps) => {
   const [showArrows, setShowArrows] = useState(false)
   const sliderRef = useRef<HTMLDivElement>(null)
 
-  const { data } = useFetchData<ContentItem>({ endpoint: `/api/v1/${contentType}/${category}` })
+  const { data } = useFetchData<ContentItem>({ endpoint: `/${contentType}/${category}` })
 
   const formattedCategoryName = category.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase())
 

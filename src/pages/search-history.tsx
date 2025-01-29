@@ -18,7 +18,7 @@ type ContentItem = {
 }
 
 const SearchHistoryPage: React.FC = () => {
-  const { data, handleDelete } = useFetchData<ContentItem>({ endpoint: '/api/v1/search/history' })
+  const { data, handleDelete } = useFetchData<ContentItem>({ endpoint: '/search/history' })
 
   if (data?.content?.length === 0) {
     return (

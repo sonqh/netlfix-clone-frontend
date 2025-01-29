@@ -1,5 +1,4 @@
 import { useLocalStorage } from '@uidotdev/usehooks'
-import axios from 'axios'
 import { createContext, useCallback, useMemo, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
@@ -57,7 +56,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     async (credentials: Credentials) => {
       isSigningUpRef.current = true
       try {
-        const { data } = await axios.post<AuthResponse>('/api/v1/auth/signup', credentials)
+        const { data } = await axiosInstance.post<AuthResponse>('/auth/signup', credentials)
         setUser(data.user)
         toast.success('Account created successfully')
         navigate('/home')
@@ -75,7 +74,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     async (credentials: Credentials) => {
       isLoggingInRef.current = true
       try {
-        const { data } = await axios.post<AuthResponse>('/api/v1/auth/login', credentials)
+        const { data } = await axiosInstance.post<AuthResponse>('/auth/login', credentials)
         setUser(data.user)
         localStorage.setItem('token', data.token)
         navigate('/home')
@@ -91,7 +90,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = useCallback(async () => {
     try {
-      await axios.post('/api/v1/auth/logout')
+      await axiosInstance.post('/auth/logout')
       setUser(null)
       localStorage.removeItem('token')
       toast.success('Logged out successfully')
@@ -122,7 +121,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
-      const { data } = await axiosInstance.get<AuthResponse>('/api/v1/auth/authCheck', {
+      const { data } = await axiosInstance.get<AuthResponse>('/auth/authCheck', {
         headers: { Authorization: `Bearer ${token}` },
         signal: new AbortController().signal
       })

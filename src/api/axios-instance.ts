@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 
-// Create Axios instance
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: `/api/${import.meta.env.VITE_API_VERSION}`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -48,6 +48,10 @@ const removePendingRequest = (config: AxiosRequestConfig): void => {
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     addPendingRequest(config) // Track the current request
+
+    // Add Idempotency-Key
+    config.headers['Idempotency-Key'] = uuidv4()
+
     return config
   },
   (error) => {

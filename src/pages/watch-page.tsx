@@ -46,15 +46,15 @@ const WatchPage: React.FC = () => {
   const { contentType } = useContentStore()
 
   const { data: trailersData } = useFetchData<{ trailers: Trailer[] }>({
-    endpoint: `/api/v1/${contentType}/${id}/trailers`
+    endpoint: `/${contentType}/${id}/trailers`
   })
 
   const { data: similarContent } = useFetchData<Movies>({
-    endpoint: `/api/v1/${contentType}/${id}/similar`
+    endpoint: `/${contentType}/${id}/similar`
   })
 
   const { data: content, isLoading } = useFetchData<Content>({
-    endpoint: `/api/v1/${contentType}/${id}/details`
+    endpoint: `/${contentType}/${id}/details`
   })
 
   if (isLoading) {

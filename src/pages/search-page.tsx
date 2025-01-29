@@ -13,9 +13,7 @@ const SearchPage = () => {
   const [activeTab, setActiveTab] = useState<'movie' | 'tv' | 'person'>('movie')
   const { setContentType } = useContentStore()
 
-  const { searchTerm, setSearchTerm, results, isLoading } = useSearchAndDelete<SearchResult>(
-    `/api/v1/search/${activeTab}`
-  )
+  const { searchTerm, setSearchTerm, results, isLoading } = useSearchAndDelete<SearchResult>(`/search/${activeTab}`)
 
   const handleTabClick = (tab: 'movie' | 'tv' | 'person') => {
     setActiveTab(tab)
