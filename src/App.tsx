@@ -1,6 +1,6 @@
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
-import { lazy, useEffect } from 'react'
+import { lazy, useEffect, Suspense } from 'react'
 import { Loader } from 'lucide-react'
 import { useAuth } from './hooks/use-auth'
 import ProtectedRoute from './routes/protected-route'
@@ -46,61 +46,68 @@ function App() {
           console.error('Error Boundary caught an error:', error, info)
         }}
       >
-        <Routes>
-          <Route index element={user ? <HomePage /> : <LandingPage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/signup' element={<SignupPage />} />
-          <Route
-            path='home'
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='movies'
-            element={
-              <ProtectedRoute>
-                <MoviesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='tv-shows'
-            element={
-              <ProtectedRoute>
-                <TVShowsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='watch/:id'
-            element={
-              <ProtectedRoute>
-                <WatchPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='search'
-            element={
-              <ProtectedRoute>
-                <SearchPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='history'
-            element={
-              <ProtectedRoute>
-                <SearchHistoryPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route path='*' element={<NotFound />} />
-        </Routes>
+        <Suspense
+          fallback={
+            <div className='flex justify-center items-center h-screen'>
+              <Loader className='animate-spin text-red-600 size-10' />
+            </div>
+          }
+        >
+          <Routes>
+            <Route index element={user ? <HomePage /> : <LandingPage />} />
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/signup' element={<SignupPage />} />
+            <Route
+              path='home'
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='movies'
+              element={
+                <ProtectedRoute>
+                  <MoviesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='tv-shows'
+              element={
+                <ProtectedRoute>
+                  <TVShowsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='watch/:id'
+              element={
+                <ProtectedRoute>
+                  <WatchPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='search'
+              element={
+                <ProtectedRoute>
+                  <SearchPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='history'
+              element={
+                <ProtectedRoute>
+                  <SearchHistoryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </ErrorBoundary>
       <Toaster />
     </>
