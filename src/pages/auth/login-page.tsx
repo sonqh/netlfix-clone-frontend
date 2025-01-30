@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Header from '../../components/_components/header'
 import Skeleton from '../../components/skeletons/index'
 import { useAuth } from '../../hooks/use-auth'
+import { motion } from 'framer-motion'
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -20,7 +21,12 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className='hero-bg h-screen w-full'>
+    <motion.div
+      className='hero-bg h-screen w-full'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Header>
         <Link to='/'>
           <img src='/netflix-logo.png' alt='Netflix' className='w-24' />
@@ -66,7 +72,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

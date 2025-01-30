@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import Skeleton from '../../components/skeletons/index'
 import { useAuth } from '../../hooks/use-auth'
 
@@ -30,7 +31,12 @@ const SignupPage: React.FC = () => {
         {isSigningUp ? (
           <Skeleton />
         ) : (
-          <div className='w-full max-w-md space-y-4 p-8 bg-black/60 rounded-lg shadow-md'>
+          <motion.div
+            className='w-full max-w-md space-y-4 p-8 bg-black/60 rounded-lg shadow-md'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
             <h1 className='text-white text-center text-2xl font-bold mb-4'>SignUp</h1>
             <form className='space-y-4' onSubmit={handleSubmit}>
               <label htmlFor='email' className='text-sm font-medium text-gray-300 block'>
@@ -79,7 +85,7 @@ const SignupPage: React.FC = () => {
                 Login
               </Link>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

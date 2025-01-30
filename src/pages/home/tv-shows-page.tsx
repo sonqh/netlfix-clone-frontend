@@ -7,6 +7,7 @@ import useFetchData from '../../hooks/use-fetch'
 import { TV_CATEGORIES } from '../../utils/constant'
 import Navbar from '../../components/_components/navbar'
 import BackgroundImage from '../../components/_components/background-image'
+import { motion } from 'framer-motion'
 
 type ContentItem = {
   success: boolean
@@ -39,7 +40,12 @@ const TVShowsPage: React.FC = () => {
 
   return (
     <>
-      <div className='relative h-screen text-white'>
+      <motion.div
+        className='relative h-screen text-white'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <Navbar />
         <BackgroundImage backdropPath={backdrop_path ?? ''} />
         <Overlay />
@@ -54,7 +60,7 @@ const TVShowsPage: React.FC = () => {
           </div>
           <ActionButtons id={`${id}`} />
         </div>
-      </div>
+      </motion.div>
       <div className='flex flex-col gap-10 bg-black py-10'>
         {TV_CATEGORIES.map((category) => (
           <MovieSlider key={category} category={category} contentType='tv' />

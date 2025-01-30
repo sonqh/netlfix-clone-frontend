@@ -1,12 +1,13 @@
-import { Toaster } from 'react-hot-toast'
-import { Route, Routes } from 'react-router-dom'
-import { lazy, useEffect, Suspense } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { Loader } from 'lucide-react'
-import { useAuth } from './hooks/use-auth'
-import ProtectedRoute from './routes/protected-route'
-import NotFound from './pages/errors/not-found'
+import { lazy, Suspense, useEffect } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import { Toaster } from 'react-hot-toast'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import ErrorFallback from './components/_components/error-fallback'
+import { useAuth } from './hooks/use-auth'
+import NotFound from './pages/errors/not-found'
+import ProtectedRoute from './routes/protected-route'
 
 const HomePage = lazy(() => import('./pages/home/home-page'))
 const LandingPage = lazy(() => import('./pages/public-pages/landing'))
@@ -20,6 +21,7 @@ const SearchHistoryPage = lazy(() => import('./pages/search/search-history'))
 
 function App() {
   const { isCheckingAuth, authCheck, user } = useAuth()
+  const location = useLocation()
 
   useEffect(() => {
     if (!isCheckingAuth) {
@@ -53,60 +55,62 @@ function App() {
             </div>
           }
         >
-          <Routes>
-            <Route index element={user ? <HomePage /> : <LandingPage />} />
-            <Route path='/login' element={<LoginPage />} />
-            <Route path='/signup' element={<SignupPage />} />
-            <Route
-              path='home'
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='movies'
-              element={
-                <ProtectedRoute>
-                  <MoviesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='tv-shows'
-              element={
-                <ProtectedRoute>
-                  <TVShowsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='watch/:id'
-              element={
-                <ProtectedRoute>
-                  <WatchPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='search'
-              element={
-                <ProtectedRoute>
-                  <SearchPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='history'
-              element={
-                <ProtectedRoute>
-                  <SearchHistoryPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path='*' element={<NotFound />} />
-          </Routes>
+          <AnimatePresence propagate={true}>
+            <Routes location={location} key={location.pathname}>
+              <Route index element={user ? <HomePage /> : <LandingPage />} />
+              <Route path='/login' element={<LoginPage />} />
+              <Route path='/signup' element={<SignupPage />} />
+              <Route
+                path='home'
+                element={
+                  <ProtectedRoute>
+                    <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='movies'
+                element={
+                  <ProtectedRoute>
+                    <MoviesPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='tv-shows'
+                element={
+                  <ProtectedRoute>
+                    <TVShowsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='watch/:id'
+                element={
+                  <ProtectedRoute>
+                    <WatchPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='search'
+                element={
+                  <ProtectedRoute>
+                    <SearchPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='history'
+                element={
+                  <ProtectedRoute>
+                    <SearchHistoryPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </AnimatePresence>
         </Suspense>
       </ErrorBoundary>
       <Toaster />

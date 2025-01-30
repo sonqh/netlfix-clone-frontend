@@ -1,11 +1,17 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import Header from '../../components/_components/header'
 import HeroSection from '../../components/sections/hero-section'
 import ContentSection from '../../components/sections/content-section'
 
 const LandingPage: React.FC = () => {
   return (
-    <div className='hero-bg relative'>
+    <motion.div
+      className='hero-bg relative'
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
       <Header linkText='Sign In' linkUrl='/login' />
       <HeroSection />
 
@@ -21,9 +27,12 @@ const LandingPage: React.FC = () => {
         description='Save your favorites easily and always have something to watch.'
         imageSrc='/stranger-things-lg.png'
         additionalContent={
-          <div
+          <motion.div
             className='flex items-center gap-2 absolute bottom-5 left-1/2 -translate-x-1/2 bg-black
               w-3/4 lg:w-1/2 h-24 border border-slate-500 rounded-md px-2 z-30'
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
           >
             <img src='/stranger-things-sm.png' alt='Stranger Things' className='h-full' />
             <div className='flex justify-between items-center w-full'>
@@ -33,7 +42,7 @@ const LandingPage: React.FC = () => {
               </div>
               <img src='/download-icon.gif' alt='Downloading' className='h-12' />
             </div>
-          </div>
+          </motion.div>
         }
         isReversed
       />
@@ -52,7 +61,7 @@ const LandingPage: React.FC = () => {
         imageSrc='/kids.png'
         isReversed
       />
-    </div>
+    </motion.div>
   )
 }
 
