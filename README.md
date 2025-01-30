@@ -92,6 +92,7 @@ npm run commitlint
 - **Axios**: A promise-based HTTP client for the browser and Node.js.
 - **React Router**: A collection of navigational components for React applications.
 - **Zustand**: A small, fast, and scalable state-management solution.
+- **Framer Motion**: A library for creating animations and gestures for React applications.
 
 ## Available Plugins
 
