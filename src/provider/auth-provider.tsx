@@ -108,6 +108,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const now = Date.now()
     // Check if the last check was made within the cache duration
     if (lastAuthCheckRef.current && now - lastAuthCheckRef.current < CACHE_DURATION) {
+      console.log('checked cache at ', now)
       return
     }
     lastAuthCheckRef.current = now
