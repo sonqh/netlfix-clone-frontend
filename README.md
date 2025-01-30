@@ -1,7 +1,87 @@
-# React + TypeScript + Vite
+# Netflix Clone
 
-This project is a Netflix clone frontend built with React, TypeScript, and Vite. It includes hot module replacement (HMR) and some ESLint rules for code quality.
-This project aims to replicate the core functionalities of Netflix, including user authentication, movie and TV show browsing, and search capabilities. It leverages The Movie Database (TMDB) API to fetch movie and TV show data.
+This project is a Netflix clone frontend built with React, TypeScript, and Vite. It includes hot module replacement (HMR) and some ESLint rules for code quality. This project aims to replicate the core functionalities of Netflix, including user authentication, movie and TV show browsing, and search capabilities. It leverages The Movie Database (TMDB) API to fetch movie and TV show data.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Running the Project](#running-the-project)
+- [Linting and Formatting](#linting-and-formatting)
+- [Git Hooks](#git-hooks)
+- [Key Technologies](#key-technologies)
+- [Available Plugins](#available-plugins)
+- [Optimizations](#optimizations)
+- [Expanding the ESLint Configuration](#expanding-the-eslint-configuration)
+
+## Installation
+
+To get started with this project, clone the repository and install the dependencies:
+
+```sh
+git clone https://github.com/sonqh/netlfix-clone-frontend.git
+cd netflix-clone-frontend
+npm install
+```
+
+### Running the Project
+
+To start the development server, run:
+
+```sh
+npm run dev
+```
+
+To build the project for production, run:
+
+```sh
+npm run build
+```
+
+To preview the production build, run:
+
+```sh
+npm run preview
+```
+
+### Linting and Formatting
+
+To check for linting errors, run:
+
+```sh
+npm run lint
+```
+
+To fix linting errors, run:
+
+```sh
+npm run lint:fix
+```
+
+To check code formatting with Prettier, run:
+
+```sh
+npm run prettier
+```
+
+To fix code formatting with Prettier, run:
+
+```sh
+npm run prettier:fix
+```
+
+### Git Hooks
+
+To prepare Husky for Git hooks, run:
+
+```sh
+npm run prepare
+```
+
+To lint commit messages, run:
+
+```sh
+npm run commitlint
+```
 
 ## Key Technologies
 
@@ -18,73 +98,14 @@ This project aims to replicate the core functionalities of Netflix, including us
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh.
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh.
 
-## Expanding the ESLint Configuration
+## Optimizations
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This project includes several optimizations to enhance performance and improve user experience:
 
-- Configure the top-level `parserOptions` property like this:
+### API Request Caching
 
-```json
-{
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  }
-}
-```
+To reduce unnecessary API requests and improve responsiveness, data fetching utilizes a caching mechanism. Responses are stored in memory and reused for up to **5 minutes** before fetching fresh data. This minimizes redundant network requests and enhances performance, especially for frequently accessed data.
 
-## Scripts
+### Request Deduplication
 
-- `dev`: Start the development server.
-- `build`: Build the project for production.
-- `lint`: Run ESLint to check for linting errors.
-- `lint:fix`: Run ESLint and fix linting errors.
-- `prettier`: Check code formatting with Prettier.
-- `prettier:fix`: Fix code formatting with Prettier.
-- `preview`: Preview the production build.
-- `prepare`: Prepare Husky for Git hooks.
-- `commitlint`: Lint commit messages.
-
-## Additional Tools
-
-- **Husky**: Git hooks made easy.
-- **Commitlint**: Lint commit messages.
-- **Prettier**: Code formatter.
-
-## Environment Configuration
-
-The environment variables are managed using Vite's `loadEnv` function. Make sure to set up your `.env` files accordingly.
-
-## Proxy Configuration
-
-The development server is configured to proxy API requests to the backend server:
-
-```typescript
-server: {
-  proxy: {
-    '/api': {
-      target: process.env.VITE_API_BASE_URL,
-      changeOrigin: true,
-      secure: false
-    }
-  }
-}
-```
-
-## Caching and Request Optimization
-
-This project implements a caching mechanism and Axios abort controllers to cancel and avoid redundant requests to the server. This ensures efficient data fetching and improves performance.
-
-## Responsive Design
-
-The application is designed to be responsive, supporting both mobile and laptop screens for an optimal user experience across devices.
-
-## Renovate Configuration
-
-This project uses Renovate for dependency management. The configuration is defined in `renovate.json`:
-
-```json
-{
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"]
-}
-```
+To avoid duplicate API calls, the Axios instance is configured to track pending requests. If the same request is triggered before the previous one completes, the earlier request is aborted. This prevents redundant API requests, ensuring only the latest relevant response is processed
